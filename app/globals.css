@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #100c0a;
+  --color-foreground: #f4f1ed;
+  --color-gold: #deae62;
+  --color-gold-foreground: #100c0a;
+  --color-primary: #deae62;
+  --color-primary-foreground: #100c0a;
+  --color-card: #1a1512;
+  --color-card-foreground: #f4f1ed;
+  --color-muted: #231e1b;
+  --color-muted-foreground: #aca397;
+  --color-border: #38312b;
+  --color-secondary: #29231e;
+  --color-secondary-foreground: #f4f1ed;
+  --color-input: #2d2823;
+  --color-ring: #deae62;
+  --color-destructive: #de3b3d;
+  --radius-sm: 0.5rem;
+  --font-display: var(--font-display-next), "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-sans: var(--font-sans-next), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+html[dir="rtl"] {
+  --font-sans: var(--font-arabic-sans), "Noto Sans Arabic", ui-sans-serif, sans-serif;
+  --font-display: var(--font-arabic-display), "Noto Naskh Arabic", "Amiri", serif;
+}
+
+html[dir="rtl"] body {
+  line-height: 1.8;
+}
+
+html[dir="rtl"] .uppercase {
+  text-transform: none;
+  letter-spacing: 0.03em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.section {
+  padding-block: 5rem;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-block: 6rem;
+  }
+}
+
+.container-page {
+  width: min(100% - 2rem, 1200px);
+  margin-inline: auto;
+}
+
+.gold-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-gold) 55%, transparent), transparent);
+}
+
+.star-motif {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cpath fill='none' stroke='%23deae62' stroke-opacity='0.08' d='M36 8 L40 28 L60 32 L40 36 L36 56 L32 36 L12 32 L32 28 Z'/%3E%3C/svg%3E");
+}
+
+@keyframes slowzoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.04);
+  }
+}
+
+.animate-slowzoom {
+  animation: slowzoom 6.5s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
