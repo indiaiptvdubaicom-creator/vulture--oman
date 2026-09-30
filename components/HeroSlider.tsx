@@ -23,6 +23,7 @@ export function HeroSlider({ slides, homeTitle }: { slides: HeroSlide[]; homeTit
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reduced, setReduced] = useState(false);
+  const [warm, setWarm] = useState(false);
   const touchStart = useRef<number | null>(null);
 
   useEffect(() => {
@@ -30,7 +31,11 @@ export function HeroSlider({ slides, homeTitle }: { slides: HeroSlide[]; homeTit
     setReduced(mq.matches);
     const onChange = () => setReduced(mq.matches);
     mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+    const idle = window.setTimeout(() => setWarm(true), 1200);
+    return () => {
+      mq.removeEventListener("change", onChange);
+      window.clearTimeout(idle);
+    };
   }, []);
 
   const next = useCallback(() => {
@@ -91,7 +96,9 @@ export function HeroSlider({ slides, homeTitle }: { slides: HeroSlide[]; homeTit
     >
       {slides.map((item, i) => {
         const nearby =
-          i === index || i === (index + 1) % slides.length || i === (index - 1 + slides.length) % slides.length;
+          i === index ||
+          (warm &&
+            (i === (index + 1) % slides.length || i === (index - 1 + slides.length) % slides.length));
         return (
           <div
             key={item.headline}
