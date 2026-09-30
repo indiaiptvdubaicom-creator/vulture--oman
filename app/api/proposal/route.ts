@@ -1,3 +1,4 @@
+import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -23,12 +24,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
-  const destination = process.env.PROPOSAL_TO_EMAIL?.trim();
-  if (!destination) {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) {
     return NextResponse.json({ ok: false }, { status: 500 });
   }
 
-  const payload = {
+  const record = {
+    receivedAt: new Date().toISOString(),
     name,
     email,
     phone: field(data, "phone"),
@@ -40,22 +42,34 @@ export async function POST(request: Request) {
     services: field(data, "services"),
     budget: field(data, "budget"),
     message: field(data, "message"),
-    _subject: `Vulture Events Oman proposal — ${name}`,
-    _template: "table",
-    _captcha: "false",
   };
 
-  const delivered = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(destination)}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify(payload),
-  }).catch(() => null);
-
-  if (!delivered || !delivered.ok) {
+  try {
+    await put(`proposals/${Date.now()}.json`, JSON.stringify(record, null, 2), {
+      access: "private",
+      addRandomSuffix: true,
+      contentType: "application/json",
+      token,
+    });
+  } catch {
     return NextResponse.json({ ok: false }, { status: 502 });
+  }
+
+  const destination = process.env.PROPOSAL_TO_EMAIL?.trim();
+  if (destination) {
+    await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(destination)}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        ...record,
+        _subject: `Vulture Events Oman proposal — ${name}`,
+        _template: "table",
+        _captcha: "false",
+      }),
+    }).catch(() => null);
   }
 
   return NextResponse.json({ ok: true });
