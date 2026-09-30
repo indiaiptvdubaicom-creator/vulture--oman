@@ -1,5 +1,5 @@
 import { put } from "@vercel/blob";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -57,19 +57,22 @@ export async function POST(request: Request) {
 
   const destination = process.env.PROPOSAL_TO_EMAIL?.trim();
   if (destination) {
-    await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(destination)}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        ...record,
-        _subject: `Vulture Events Oman proposal — ${name}`,
-        _template: "table",
-        _captcha: "false",
-      }),
-    }).catch(() => null);
+    after(() =>
+      fetch(`https://formsubmit.co/ajax/${encodeURIComponent(destination)}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          ...record,
+          _subject: `Vulture Events Oman proposal — ${name}`,
+          _template: "table",
+          _captcha: "false",
+        }),
+        signal: AbortSignal.timeout(8000),
+      }).catch(() => null),
+    );
   }
 
   return NextResponse.json({ ok: true });
