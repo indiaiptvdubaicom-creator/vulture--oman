@@ -50,62 +50,71 @@ export function SiteHeader() {
   const solid = pathname !== "/" || scrolled || open;
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-40 transition-colors ${
-        solid ? "border-b border-border bg-background/90 backdrop-blur-md" : "bg-transparent"
-      }`}
-    >
-      <div className="container-page flex items-center justify-between gap-4 py-5">
-        <BrandMarkClient />
-        <nav className="hidden items-center gap-4 lg:flex xl:gap-5" aria-label={t("primary")}>
-          {NAV.map((item) => {
-            const current = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                prefetch={false}
-                aria-current={current ? "page" : undefined}
-                className={`text-sm ${current ? "text-gold" : "text-foreground/85 hover:text-gold"}`}
-              >
-                {t(item.key)}
-              </Link>
-            );
-          })}
-        </nav>
-        <div className="hidden items-center gap-4 lg:flex">
-          <LanguageSwitcher />
-          <Link
-            href="/contact"
-            prefetch={false}
-            className="inline-flex rounded-full bg-gold px-5 py-2.5 text-sm font-semibold text-gold-foreground hover:bg-[#e8c07a]"
-          >
-            {t("proposal")}
-          </Link>
+    <>
+      <header
+        className={`fixed inset-x-0 top-0 z-40 transition-colors ${
+          open
+            ? "border-b border-border bg-background"
+            : solid
+              ? "border-b border-border bg-background/90 backdrop-blur-md"
+              : "bg-transparent"
+        }`}
+      >
+        <div className="container-page flex items-center justify-between gap-4 py-5">
+          <BrandMarkClient />
+          <nav className="hidden items-center gap-4 lg:flex xl:gap-5" aria-label={t("primary")}>
+            {NAV.map((item) => {
+              const current = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  prefetch={false}
+                  aria-current={current ? "page" : undefined}
+                  className={`text-sm ${current ? "text-gold" : "text-foreground/85 hover:text-gold"}`}
+                >
+                  {t(item.key)}
+                </Link>
+              );
+            })}
+          </nav>
+          <div className="hidden items-center gap-4 lg:flex">
+            <LanguageSwitcher />
+            <Link
+              href="/contact"
+              prefetch={false}
+              className="inline-flex rounded-full bg-gold px-5 py-2.5 text-sm font-semibold text-gold-foreground hover:bg-[#e8c07a]"
+            >
+              {t("proposal")}
+            </Link>
+          </div>
+          <div className="flex items-center gap-3 lg:hidden">
+            <LanguageSwitcher />
+            <button
+              type="button"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground"
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              onClick={() => setOpen((v) => !v)}
+            >
+              <span className="sr-only">{open ? t("closeMenu") : t("openMenu")}</span>
+              <span aria-hidden className="grid gap-1.5">
+                <span className={`block h-0.5 w-5 bg-foreground transition ${open ? "translate-y-2 rotate-45" : ""}`} />
+                <span className={`block h-0.5 w-5 bg-foreground transition ${open ? "opacity-0" : ""}`} />
+                <span className={`block h-0.5 w-5 bg-foreground transition ${open ? "-translate-y-2 -rotate-45" : ""}`} />
+              </span>
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-3 lg:hidden">
-          <LanguageSwitcher />
-          <button
-            type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground"
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            onClick={() => setOpen((v) => !v)}
-          >
-            <span className="sr-only">{open ? t("closeMenu") : t("openMenu")}</span>
-            <span aria-hidden className="grid gap-1.5">
-              <span className={`block h-0.5 w-5 bg-foreground transition ${open ? "translate-y-2 rotate-45" : ""}`} />
-              <span className={`block h-0.5 w-5 bg-foreground transition ${open ? "opacity-0" : ""}`} />
-              <span className={`block h-0.5 w-5 bg-foreground transition ${open ? "-translate-y-2 -rotate-45" : ""}`} />
-            </span>
-          </button>
-        </div>
-      </div>
+      </header>
 
       {open ? (
         <div
           id="mobile-nav"
-          className="fixed inset-0 z-50 bg-background/96 px-6 py-6 backdrop-blur-md lg:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label={t("mobile")}
+          className="fixed inset-0 z-50 overflow-y-auto bg-background px-6 py-6 lg:hidden"
         >
           <div className="mb-8 flex items-center justify-between gap-3">
             <BrandMarkClient compact />
@@ -142,6 +151,6 @@ export function SiteHeader() {
           </nav>
         </div>
       ) : null}
-    </header>
+    </>
   );
 }
