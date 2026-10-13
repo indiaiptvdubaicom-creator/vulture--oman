@@ -9,10 +9,10 @@ export const site = {
     "Vulture Events Oman plans and produces conferences, exhibitions, ceremonies and guest programmes across the Sultanate, with operations centred in Muscat.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   /** Empty until the Oman business supplies real NAP. Do not invent values. */
-  phone: "",
+  phone: "+971541278113",
   email: "",
   address: "",
-  whatsapp: "",
+  whatsapp: "https://wa.me/971541278113",
 } as const;
 
 export function hasPhone() {

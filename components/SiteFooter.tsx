@@ -54,7 +54,7 @@ export async function SiteFooter() {
             {hasPhone() ? (
               <li>
                 <a href={`tel:${site.phone}`} className="hover:text-gold" dir="ltr">
-                  {site.phone}
+                  +971 54 127 8113
                 </a>
               </li>
             ) : null}
